@@ -10,8 +10,13 @@ configure_file(
   ${PROJECT_BINARY_DIR}/Version.hpp
 )
 
+find_package(Clang REQUIRED)
 find_package(LLVM REQUIRED CONFIG 7.0)
 message(STATUS "Use LLVM ${LLVM_PACKAGE_VERSION}")
 
 add_executable(Cadmium Core.cpp)
-target_include_directories(Cadmium PUBLIC ${PROJECT_BINARY_DIR})
+target_include_directories(Cadmium PUBLIC
+  ${PROJECT_BINARY_DIR}
+  ${Clang_INCLUDE_DIRS}
+)
+target_link_libraries(Cadmium ${Clang_LIBRARIES})

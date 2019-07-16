@@ -1,5 +1,6 @@
 #include "Data.hpp"
 #include "Version.hpp"
+#include <clang/Frontend/CompilerInstance.h>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -23,6 +24,10 @@ bool storePPM(std::string filename, FrameBuffer<Pixel<float>> fb) {
   fout << std::flush;
 
   fout.close();
+}
+
+void compile() {
+  auto invocation = std::make_shared<clang::CompilerInvocation>();
 }
 
 int32_t main(int32_t argc, char **argv) {
