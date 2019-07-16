@@ -1,6 +1,8 @@
 #include "Data.hpp"
 #include "Version.hpp"
+#include <fstream>
 #include <iostream>
+#include <string>
 
 #ifndef CADMIUM_VERSION_MAJOR
 #error("No version info")
@@ -8,6 +10,17 @@
 
 const size_t width = 1024;
 const size_t height = 768;
+
+bool storePPM(std::string filename) {
+  std::ofstream fout("./" + filename + ".ppm", std::ios::binary);
+  fout << "P6\n"
+       << "0"
+       << " "
+       << "0"
+       << "\n255\n"
+       << "" << std::endl;
+  fout.close();
+}
 
 int32_t main(int32_t argc, char **argv) {
   std::cout << argv[0] << " " << CADMIUM_VERSION_MAJOR << "."
