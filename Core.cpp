@@ -14,6 +14,7 @@ int32_t main(int32_t argc, char **argv) {
             << CADMIUM_VERSION_MINOR << " version" << std::endl;
 
   FrameBuffer data(width, height);
-  std::cout << "Height: " << data.getHeight() << " Width: " << data.getWidth();
+  std::cout << "Height: " << data.getHeight() << " Width: " << data.getWidth()
+            << std::endl;
   return 0;
 }

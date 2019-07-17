@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <vector>
 
 struct Pixel {
@@ -8,22 +9,24 @@ struct Pixel {
 
 class FrameBuffer {
 public:
-  FrameBuffer(size_t size)
+  FrameBuffer(std::size_t size)
       : data_(std::vector<Pixel>(size)), width_(size), height_(1){};
 
-  FrameBuffer(size_t width, size_t height)
+  FrameBuffer(std::size_t width, std::size_t height)
       : data_(std::vector<Pixel>(width * height)), width_(width),
         height_(height){};
 
-  size_t getWidth() const { return width_; }
-  size_t getHeight() const { return height_; }
+  std::size_t getWidth() const { return width_; }
+  std::size_t getHeight() const { return height_; }
 
-  Pixel operator()(size_t pos) { return data_[pos]; }
-  Pixel operator()(size_t x, size_t y) { return data_[x + y * width_]; }
+  Pixel operator()(std::size_t pos) { return data_[pos]; }
+  Pixel operator()(std::size_t x, std::size_t y) {
+    return data_[x + y * width_];
+  }
 
 private:
   FrameBuffer(){};
-  size_t width_;
-  size_t height_;
+  std::size_t width_;
+  std::size_t height_;
   std::vector<Pixel> data_;
 };

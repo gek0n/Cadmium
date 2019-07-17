@@ -13,5 +13,5 @@ configure_file(
 find_package(LLVM REQUIRED CONFIG 7.0)
 message(STATUS "Use LLVM ${LLVM_PACKAGE_VERSION}")
 
-include_directories(Cadmium "${PROJECT_BINARY_DIR}")
 add_executable(Cadmium Core.cpp)
+target_include_directories(Cadmium PUBLIC ${PROJECT_BINARY_DIR})
