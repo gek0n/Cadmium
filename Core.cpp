@@ -13,7 +13,12 @@ int32_t main(int32_t argc, char **argv) {
   std::cout << argv[0] << " " << CADMIUM_VERSION_MAJOR << "."
             << CADMIUM_VERSION_MINOR << " version" << std::endl;
 
-  FrameBuffer data(width, height);
+  FrameBuffer<Pixel<float>> data(width, height);
+  for (std::size_t w = 0; w < width; w++) {
+    for (std::size_t h = 0; h < height; h++) {
+      data(w, h) = Pixel<float>(w / float(width), h / float(height), 0);
+    }
+  }
   std::cout << "Height: " << data.getHeight() << " Width: " << data.getWidth()
             << std::endl;
   return 0;
