@@ -11,14 +11,17 @@
 const size_t width = 1024;
 const size_t height = 768;
 
-bool storePPM(std::string filename) {
+bool storePPM(std::string filename, FrameBuffer<Pixel<float>> fb) {
   std::ofstream fout("./" + filename + ".ppm", std::ios::binary);
-  fout << "P6\n"
-       << "0"
-       << " "
-       << "0"
-       << "\n255\n"
-       << "" << std::endl;
+  fout << "P6\n" << fb.getWidth() << " " << fb.getHeight() << "\n255\n";
+
+  for (const auto &pixel : fb) {
+    fout << (uint8_t)(255 * pixel.red) << (uint8_t)(255 * pixel.green)
+         << (uint8_t)(255 * pixel.blue);
+  }
+
+  fout << std::flush;
+
   fout.close();
 }
 
@@ -32,7 +35,9 @@ int32_t main(int32_t argc, char **argv) {
       data(w, h) = Pixel<float>(w / float(width), h / float(height), 0);
     }
   }
-  std::cout << "Height: " << data.getHeight() << " Width: " << data.getWidth()
-            << std::endl;
+  std::string filename = "example";
+  std::cout << "Save ./" << filename << ".ppm\nHeight: " << data.getHeight()
+            << " Width: " << data.getWidth() << std::endl;
+  storePPM(filename, data);
   return 0;
 }
