@@ -12,11 +12,16 @@ configure_file(
 
 find_package(Clang REQUIRED)
 find_package(LLVM REQUIRED CONFIG 7.0)
-message(STATUS "Use LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+llvm_map_components_to_libnames(LLVM_LIBRARIES core irreader option profiledata)
+
+link_directories(${Clang_LIBRARY_DIR})
 
 add_executable(Cadmium Core.cpp)
 target_include_directories(Cadmium PUBLIC
   ${PROJECT_BINARY_DIR}
   ${Clang_INCLUDE_DIRS}
 )
-target_link_libraries(Cadmium ${Clang_LIBRARIES})
+
+target_link_libraries(Cadmium ${Clang_LIBRARIES} ${LLVM_LIBRARIES})
