@@ -1,13 +1,7 @@
+#ifndef __DATA_HPP__
+#define __DATA_HPP__
 #include <cstdint>
 #include <vector>
-
-template <typename T> struct Pixel {
-  T red;
-  T green;
-  T blue;
-  Pixel() {}
-  Pixel(T r, T g, T b) : red(r), green(g), blue(b) {}
-};
 
 template <typename T> class FrameBuffer {
 public:
@@ -35,3 +29,5 @@ private:
   std::size_t height_;
   std::vector<T> pixels_;
 };
+
+#endif // __DATA_HPP__

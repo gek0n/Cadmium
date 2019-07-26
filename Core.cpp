@@ -1,4 +1,5 @@
 #include "Data.hpp"
+#include "Figures.hpp"
 #include "Version.hpp"
 #include <fstream>
 #include <iostream>
@@ -35,6 +36,12 @@ int32_t main(int32_t argc, char **argv) {
       data(w, h) = Pixel<float>(w / float(width), h / float(height), 0);
     }
   }
+  Sphere sphere(Pixel<float>(0, 0, 0), 0);
+  std::cout << "Create " << sphere << std::endl;
+
+  Ray ray(Pixel<float>(0, 0, 0), Pixel<float>(0, 0, 0));
+  std::cout << "Create " << ray << std::endl;
+
   std::string filename = "example";
   std::cout << "Save ./" << filename << ".ppm\nHeight: " << data.getHeight()
             << " Width: " << data.getWidth() << std::endl;
