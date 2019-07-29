@@ -1,6 +1,9 @@
 #include "Data.hpp"
 #include "Figures.hpp"
 #include "Version.hpp"
+#include <chrono>
+#include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -11,14 +14,15 @@
 
 const size_t width = 1024;
 const size_t height = 768;
+const float fov = M_PI / 3.;
 
-bool storePPM(std::string filename, FrameBuffer<Pixel<float>> fb) {
+bool storePPM(std::string filename, FrameBuffer<Vector<float>> fb) {
   std::ofstream fout("./" + filename + ".ppm", std::ios::binary);
   fout << "P6\n" << fb.getWidth() << " " << fb.getHeight() << "\n255\n";
 
-  for (const auto &pixel : fb) {
-    fout << (uint8_t)(255 * pixel.red) << (uint8_t)(255 * pixel.green)
-         << (uint8_t)(255 * pixel.blue);
+  for (const auto &Vector : fb) {
+    fout << (uint8_t)(255 * Vector.red) << (uint8_t)(255 * Vector.green)
+         << (uint8_t)(255 * Vector.blue);
   }
 
   fout << std::flush;
@@ -30,21 +34,29 @@ int32_t main(int32_t argc, char **argv) {
   std::cout << argv[0] << " " << CADMIUM_VERSION_MAJOR << "."
             << CADMIUM_VERSION_MINOR << " version" << std::endl;
 
-  FrameBuffer<Pixel<float>> data(width, height);
+  Sphere sphere(Vector<float>(0, 0, -10), 1);
+
+  FrameBuffer<Vector<float>> data(width, height);
   for (std::size_t w = 0; w < width; w++) {
     for (std::size_t h = 0; h < height; h++) {
-      data(w, h) = Pixel<float>(w / float(width), h / float(height), 0);
+      float x = (2 * (w + 0.5) / (float)width - 1) * std::tan(fov / 2.) *
+                width / (float)height;
+      float y = (2 * (h + 0.5) / (float)height - 1) * std::tan(fov / 2.);
+
+      Ray ray(Vector<float>(0, 0, 0), Vector<float>(x, y, -1).normalize());
+
+      if (sphere.isIntersectGeometric(ray)) {
+        data(w, h) = Vector<float>(0.4, 0.4, 0.3);
+      } else {
+        data(w, h) = Vector<float>(0.2, 0.7, 0.8);
+      }
     }
   }
-  Sphere sphere(Pixel<float>(0, 0, 0), 0);
-  std::cout << "Create " << sphere << std::endl;
-
-  Ray ray(Pixel<float>(0, 0, 0), Pixel<float>(0, 0, 0));
-  std::cout << "Create " << ray << std::endl;
 
   std::string filename = "example";
   std::cout << "Save ./" << filename << ".ppm\nHeight: " << data.getHeight()
             << " Width: " << data.getWidth() << std::endl;
   storePPM(filename, data);
+
   return 0;
 }
