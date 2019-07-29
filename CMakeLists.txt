@@ -14,7 +14,7 @@ find_package(Clang REQUIRED)
 find_package(LLVM REQUIRED CONFIG 7.0)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-llvm_map_components_to_libnames(LLVM_LIBRARIES core irreader option profiledata)
+llvm_map_components_to_libnames(LLVM_LIBRARIES core irreader option profiledata codegen coverage passes objcarcopts coroutines lto)
 
 link_directories(${Clang_LIBRARY_DIR})
 

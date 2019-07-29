@@ -1,8 +1,13 @@
 #include "Data.hpp"
 #include "Version.hpp"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#include <clang/CodeGen/CodeGenAction.h>
+#pragma GCC diagnostic pop
 #include <clang/Frontend/CompilerInstance.h>
 #include <fstream>
 #include <iostream>
+#include <llvm/Bitcode/BitcodeWriter.h>
 #include <string>
 
 #ifndef CADMIUM_VERSION_MAJOR
@@ -26,23 +31,38 @@ bool storePPM(std::string filename, FrameBuffer<Pixel<float>> fb) {
   fout.close();
 }
 
-void compile() {
+void compile(const std::string &source) {
   auto invocation = std::make_shared<clang::CompilerInvocation>();
+
+  invocation->getTargetOpts().Triple = llvm::sys::getProcessTriple();
+
+  // Tune invocation
+  clang::CompilerInstance compiler;
+  compiler.createDiagnostics();
+  compiler.setInvocation(invocation);
+
+  // Create and execute the frontend to generate an LLVM bitcode module.
+  auto action = std::make_unique<clang::EmitLLVMOnlyAction>();
+  auto success = compiler.ExecuteAction(*action);
+  if (!success) {
+    std::cerr << "Compilation error" << std::endl;
+    return;
+  }
+
+  auto module = action->takeModule();
+  if (!module) {
+    std::cerr << "Module is not exist" << std::endl;
+    return;
+  }
+  std::cout << "Success!" << std::endl;
+  // Save to bitcode buffer
 }
 
 int32_t main(int32_t argc, char **argv) {
   std::cout << argv[0] << " " << CADMIUM_VERSION_MAJOR << "."
             << CADMIUM_VERSION_MINOR << " version" << std::endl;
 
-  FrameBuffer<Pixel<float>> data(width, height);
-  for (std::size_t w = 0; w < width; w++) {
-    for (std::size_t h = 0; h < height; h++) {
-      data(w, h) = Pixel<float>(w / float(width), h / float(height), 0);
-    }
-  }
-  std::string filename = "example";
-  std::cout << "Save ./" << filename << ".ppm\nHeight: " << data.getHeight()
-            << " Width: " << data.getWidth() << std::endl;
-  storePPM(filename, data);
+  compile("");
+
   return 0;
 }
